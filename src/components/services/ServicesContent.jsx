@@ -4,6 +4,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -18,7 +19,9 @@ import {
 import {
   ArrowUpRight,
   ChevronRight,
+  Menu,
   Phone,
+  X,
 } from "lucide-react";
 
 import { services } from "@/data/services";
@@ -29,7 +32,6 @@ import { services } from "@/data/services";
 
 const PHONE_URL = "tel:+905334679437";
 const WHATSAPP_NUMBER = "905334679437";
-
 const SERVICE_EVENT = "marmara:service-change";
 
 /* =========================================
@@ -80,28 +82,15 @@ function ServicesBackground() {
         overflow-hidden
       "
     >
-      {/* BACKGROUND IMAGE */}
-
       <div
         className="
           absolute inset-0
           bg-[url('/images/hizmetler-bg.png')]
-          bg-cover
-          bg-center
-          bg-no-repeat
+          bg-cover bg-center bg-no-repeat
         "
       />
 
-      {/* LIGHT OVERLAY - 30% */}
-
-      <div
-        className="
-          absolute inset-0
-          bg-white/30
-        "
-      />
-
-      {/* VERY SUBTLE GRADIENT */}
+      <div className="absolute inset-0 bg-white/30" />
 
       <div
         className="
@@ -134,8 +123,7 @@ function ServiceNavigationItem({
       className={`
         group relative
         flex w-full min-w-0
-        items-center justify-between
-        gap-4
+        items-center justify-between gap-4
         border-b border-[#C9D8E6]/75
         py-[15px] pl-4 pr-2
         text-left
@@ -150,8 +138,6 @@ function ServiceNavigationItem({
         }
       `}
     >
-      {/* ACTIVE BLUE LINE */}
-
       <motion.span
         aria-hidden="true"
         initial={false}
@@ -164,20 +150,15 @@ function ServiceNavigationItem({
         }}
         className="
           absolute bottom-0 left-0 top-0
-          w-[3px]
-          origin-center
-          bg-[#079FE3]
+          w-[3px] origin-center bg-[#079FE3]
         "
       />
 
       <div className="flex min-w-0 items-start gap-3">
-        {/* NUMBER */}
-
         <span
           className={`
             mt-0.5 shrink-0
-            text-[10px] font-bold
-            tabular-nums
+            text-[10px] font-bold tabular-nums
             ${
               active
                 ? "text-[#079FE3]"
@@ -187,8 +168,6 @@ function ServiceNavigationItem({
         >
           {String(index + 1).padStart(2, "0")}
         </span>
-
-        {/* SERVICE TITLE */}
 
         <span
           className={`
@@ -206,13 +185,10 @@ function ServiceNavigationItem({
         </span>
       </div>
 
-      {/* ARROW */}
-
       <ChevronRight
         size={16}
         className={`
-          shrink-0
-          transition-all duration-300
+          shrink-0 transition-all duration-300
           ${
             active
               ? "translate-x-0 text-[#079FE3]"
@@ -236,10 +212,8 @@ function ServiceImage({
   return (
     <div
       className="
-        relative
-        aspect-[16/10]
-        w-full
-        overflow-hidden
+        relative aspect-[16/10]
+        w-full overflow-hidden
         bg-[#DCE8F1]
         sm:aspect-[16/9]
       "
@@ -250,10 +224,7 @@ function ServiceImage({
           alt={service.title}
           fill
           sizes="(max-width: 1023px) 100vw, 65vw"
-          className="
-            object-cover
-            object-center
-          "
+          className="object-cover object-center"
           onError={() => onImageError(service.id)}
         />
       ) : (
@@ -262,8 +233,7 @@ function ServiceImage({
             flex h-full w-full
             items-center justify-center
             bg-gradient-to-br
-            from-[#142F48]
-            to-[#091421]
+            from-[#142F48] to-[#091421]
             px-6 text-center
           "
         >
@@ -278,8 +248,6 @@ function ServiceImage({
           </span>
         </div>
       )}
-
-      {/* IMAGE ACCENT */}
 
       <div
         aria-hidden="true"
@@ -306,32 +274,24 @@ function ServiceDetails({
 }) {
   return (
     <article className="w-full min-w-0">
-      {/* SERVICE IMAGE */}
-
       <ServiceImage
         service={service}
         hasError={Boolean(imageErrors[service.id])}
         onImageError={onImageError}
       />
 
-      {/* CONTENT PANEL */}
-
       <div
         className="
-          mt-0
           bg-white/75
           px-5 pb-8 pt-9
           backdrop-blur-[5px]
           sm:px-8 sm:pb-10 sm:pt-11
         "
       >
-        {/* EYEBROW */}
-
         <div
           className="
-            mb-5
-            flex items-center justify-between
-            gap-4
+            mb-5 flex items-center
+            justify-between gap-4
           "
         >
           <span
@@ -347,8 +307,7 @@ function ServiceDetails({
           <span
             className="
               text-[12px] font-semibold
-              tabular-nums
-              text-[#7890A6]
+              tabular-nums text-[#7890A6]
             "
           >
             {String(activeIndex + 1).padStart(2, "0")}
@@ -356,8 +315,6 @@ function ServiceDetails({
             {String(total).padStart(2, "0")}
           </span>
         </div>
-
-        {/* TITLE */}
 
         <h2
           className="
@@ -373,14 +330,7 @@ function ServiceDetails({
           {service.title}
         </h2>
 
-        <div
-          className="
-            mt-7 h-px w-full
-            bg-[#C8D7E4]/80
-          "
-        />
-
-        {/* DESCRIPTION */}
+        <div className="mt-7 h-px w-full bg-[#C8D7E4]/80" />
 
         <div
           className="
@@ -399,12 +349,9 @@ function ServiceDetails({
           )}
         </div>
 
-        {/* CONTACT BUTTONS */}
-
         <div
           className="
-            mt-10
-            flex flex-wrap
+            mt-10 flex flex-wrap
             items-center gap-4
           "
         >
@@ -415,8 +362,7 @@ function ServiceDetails({
             className="
               group inline-flex
               min-h-[50px]
-              items-center justify-center
-              gap-3
+              items-center justify-center gap-3
               bg-[#091421]
               px-6 py-3
               text-[12px] font-semibold
@@ -441,8 +387,7 @@ function ServiceDetails({
           <a
             href={PHONE_URL}
             className="
-              inline-flex
-              min-h-[50px]
+              inline-flex min-h-[50px]
               items-center gap-2
               text-[13px] font-semibold
               text-[#091421]
@@ -460,6 +405,187 @@ function ServiceDetails({
 }
 
 /* =========================================
+   MOBILE SERVICES DRAWER
+========================================= */
+
+function MobileServicesDrawer({
+  open,
+  onClose,
+  activeId,
+  activeIndex,
+  onSelect,
+  shouldReduceMotion,
+  closeButtonRef,
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* BACKDROP */}
+
+          <motion.button
+            type="button"
+            aria-label="Hizmet menüsünü kapat"
+            onClick={onClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.25,
+            }}
+            className="
+              fixed inset-0 z-[120]
+              bg-[#091421]/55
+              lg:hidden
+            "
+          />
+
+          {/* DRAWER */}
+
+          <motion.aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hizmetler menüsü"
+            initial={
+              shouldReduceMotion
+                ? false
+                : { x: "-100%" }
+            }
+            animate={{ x: 0 }}
+            exit={
+              shouldReduceMotion
+                ? { x: 0 }
+                : { x: "-100%" }
+            }
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.35,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="
+              fixed inset-y-0 left-0
+              z-[130]
+              flex w-[min(86vw,360px)]
+              flex-col
+              overflow-hidden
+              bg-[#F3F8FC]
+              shadow-[20px_0_60px_rgba(9,20,33,0.2)]
+              lg:hidden
+            "
+          >
+            {/* DRAWER HEADER */}
+
+            <div
+              className="
+                flex shrink-0
+                items-center justify-between
+                gap-4
+                border-b border-[#C9D8E6]
+                px-5 py-6
+              "
+            >
+              <div>
+                <span
+                  className="
+                    text-[10px] font-bold
+                    uppercase tracking-[0.2em]
+                    text-[#079FE3]
+                  "
+                >
+                  MARMARA TESİSAT
+                </span>
+
+                <h2
+                  className="
+                    mt-1
+                    font-[family-name:var(--font-manrope)]
+                    text-[22px] font-extrabold
+                    tracking-tight text-[#091421]
+                  "
+                >
+                  Hizmetlerimiz
+                </h2>
+              </div>
+
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={onClose}
+                aria-label="Menüyü kapat"
+                className="
+                  flex h-11 w-11 shrink-0
+                  items-center justify-center
+                  border border-[#C9D8E6]
+                  text-[#091421]
+                  transition-colors
+                  hover:border-[#079FE3]
+                  hover:text-[#079FE3]
+                  focus-visible:outline-2
+                  focus-visible:outline-[#079FE3]
+                "
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* SELECTED SERVICE COUNTER */}
+
+            <div
+              className="
+                flex shrink-0
+                items-center justify-between
+                px-5 py-4
+              "
+            >
+              <span
+                className="
+                  text-[10px] font-bold
+                  uppercase tracking-[0.15em]
+                  text-[#526A7F]
+                "
+              >
+                HİZMET ALANLARIMIZ
+              </span>
+
+              <span
+                className="
+                  text-[12px] font-semibold
+                  tabular-nums text-[#079FE3]
+                "
+              >
+                {String(activeIndex + 1).padStart(2, "0")}
+                {" / "}
+                {String(services.length).padStart(2, "0")}
+              </span>
+            </div>
+
+            {/* SCROLLABLE SERVICE LIST */}
+
+            <nav
+              aria-label="Mobil hizmet seçimi"
+              className="
+                min-h-0 flex-1
+                overflow-y-auto overscroll-contain
+                px-3 pb-8
+              "
+            >
+              {services.map((service, index) => (
+                <ServiceNavigationItem
+                  key={service.id}
+                  service={service}
+                  index={index}
+                  active={activeId === service.id}
+                  onSelect={onSelect}
+                />
+              ))}
+            </nav>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* =========================================
    MAIN COMPONENT
 ========================================= */
 
@@ -471,6 +597,11 @@ export default function ServicesContent() {
   );
 
   const [imageErrors, setImageErrors] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const contentRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const closeButtonRef = useRef(null);
 
   /* =========================================
      URL SYNCHRONIZATION
@@ -478,31 +609,18 @@ export default function ServicesContent() {
 
   const syncFromUrl = useCallback(() => {
     setActiveId(getServiceIdFromUrl());
+    setMobileMenuOpen(false);
   }, []);
 
   useEffect(() => {
     syncFromUrl();
 
-    window.addEventListener(
-      "hashchange",
-      syncFromUrl
-    );
-
-    window.addEventListener(
-      "popstate",
-      syncFromUrl
-    );
+    window.addEventListener("hashchange", syncFromUrl);
+    window.addEventListener("popstate", syncFromUrl);
 
     return () => {
-      window.removeEventListener(
-        "hashchange",
-        syncFromUrl
-      );
-
-      window.removeEventListener(
-        "popstate",
-        syncFromUrl
-      );
+      window.removeEventListener("hashchange", syncFromUrl);
+      window.removeEventListener("popstate", syncFromUrl);
     };
   }, [syncFromUrl]);
 
@@ -516,6 +634,7 @@ export default function ServicesContent() {
 
       if (!id) {
         setActiveId(services[0]?.id ?? "");
+        setMobileMenuOpen(false);
         return;
       }
 
@@ -525,6 +644,7 @@ export default function ServicesContent() {
 
       if (matchingService) {
         setActiveId(matchingService.id);
+        setMobileMenuOpen(false);
       }
     };
 
@@ -542,6 +662,41 @@ export default function ServicesContent() {
   }, []);
 
   /* =========================================
+     MOBILE MENU BODY SCROLL LOCK
+  ========================================= */
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
+  /* =========================================
+     RESTORE BUTTON FOCUS
+  ========================================= */
+
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+    menuButtonRef.current?.focus();
+  }, []);
+
+  /* =========================================
      SELECT SERVICE
   ========================================= */
 
@@ -553,15 +708,29 @@ export default function ServicesContent() {
     if (!matchingService) return;
 
     setActiveId(matchingService.id);
+    setMobileMenuOpen(false);
 
-    const nextUrl =
-      `/hizmetler#${matchingService.id}`;
+    const nextUrl = `/hizmetler#${matchingService.id}`;
 
     window.history.pushState(
       window.history.state,
       "",
       nextUrl
     );
+
+    // Mobilde seçilen hizmetin içeriğine dön.
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollIntoView({
+          behavior: window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches
+            ? "instant"
+            : "smooth",
+          block: "start",
+        });
+      });
+    }
   }, []);
 
   /* =========================================
@@ -599,15 +768,74 @@ export default function ServicesContent() {
         relative isolate
         min-h-screen
         w-full min-w-0
+        overflow-x-clip
         bg-transparent
         text-[#13263A]
       "
     >
-      {/* =====================================
-          FIXED BACKGROUND
-      ===================================== */}
+      {/* FIXED BACKGROUND */}
 
       <ServicesBackground />
+
+      {/* =====================================
+          MOBILE FLOATING MENU BUTTON
+      ===================================== */}
+
+      {!mobileMenuOpen && (
+        <button
+          ref={menuButtonRef}
+          type="button"
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Hizmetler menüsünü aç"
+          aria-expanded={false}
+          className="
+            fixed left-0 top-1/2
+            z-[110]
+            flex min-h-[108px]
+            w-[43px]
+            -translate-y-1/2
+            flex-col
+            items-center justify-center
+            gap-2
+            rounded-r-xl
+            border border-l-0
+            border-[#079FE3]/40
+            bg-[#091421]
+            px-2 py-4
+            text-white
+            shadow-[4px_4px_20px_rgba(9,20,33,0.2)]
+            transition-colors duration-300
+            hover:bg-[#079FE3]
+            focus-visible:outline-2
+            focus-visible:outline-[#079FE3]
+            lg:hidden
+          "
+        >
+          <Menu size={19} />
+
+          <span
+            className="
+              text-[10px] font-bold
+              tracking-[0.08em]
+              [writing-mode:vertical-rl]
+            "
+          >
+            HİZMETLER
+          </span>
+        </button>
+      )}
+
+      {/* MOBILE DRAWER */}
+
+      <MobileServicesDrawer
+        open={mobileMenuOpen}
+        onClose={closeMobileMenu}
+        activeId={activeService.id}
+        activeIndex={activeIndex}
+        onSelect={selectService}
+        shouldReduceMotion={shouldReduceMotion}
+        closeButtonRef={closeButtonRef}
+      />
 
       {/* =====================================
           PAGE CONTENT
@@ -616,17 +844,15 @@ export default function ServicesContent() {
       <div
         className="
           relative z-10
-          mx-auto
-          w-full max-w-[1600px]
+          mx-auto w-full
+          max-w-[1600px]
           px-5 pb-20 pt-[185px]
           sm:px-10 sm:pt-[195px]
           lg:px-16 lg:pb-28 lg:pt-[205px]
           xl:px-20
         "
       >
-        {/* =====================================
-            PAGE HEADING
-        ===================================== */}
+        {/* PAGE HEADING */}
 
         <div className="mb-12 lg:mb-16">
           <div className="mb-5 flex items-center gap-3">
@@ -655,9 +881,7 @@ export default function ServicesContent() {
             "
           >
             Hizmetlerimiz
-            <span className="text-[#079FE3]">
-              .
-            </span>
+            <span className="text-[#079FE3]">.</span>
           </h1>
 
           <p
@@ -675,7 +899,7 @@ export default function ServicesContent() {
         </div>
 
         {/* =====================================
-            TWO COLUMN LAYOUT
+            RESPONSIVE SERVICE LAYOUT
         ===================================== */}
 
         <div
@@ -688,22 +912,19 @@ export default function ServicesContent() {
             xl:gap-20
           "
         >
-          {/* =====================================
-              LEFT SERVICES NAVIGATION
-          ===================================== */}
+          {/* DESKTOP SERVICE NAVIGATION */}
 
           <aside
             className="
-              min-w-0
-              lg:sticky
-              lg:top-[165px]
+              hidden min-w-0
+              lg:sticky lg:top-[165px]
+              lg:block
             "
           >
             <div
               className="
-                mb-6
-                flex items-center justify-between
-                gap-3
+                mb-6 flex items-center
+                justify-between gap-3
               "
             >
               <span
@@ -719,21 +940,16 @@ export default function ServicesContent() {
               <span
                 className="
                   text-[12px] font-semibold
-                  tabular-nums
-                  text-[#079FE3]
+                  tabular-nums text-[#079FE3]
                 "
               >
                 {String(activeIndex + 1).padStart(2, "0")}
-
                 <span className="mx-1.5 text-[#7890A6]">
                   /
                 </span>
-
                 {String(services.length).padStart(2, "0")}
               </span>
             </div>
-
-            {/* TRANSLUCENT SERVICE LIST */}
 
             <nav
               aria-label="Hizmet seçimi"
@@ -750,22 +966,20 @@ export default function ServicesContent() {
                   key={service.id}
                   service={service}
                   index={index}
-                  active={
-                    activeService.id === service.id
-                  }
+                  active={activeService.id === service.id}
                   onSelect={selectService}
                 />
               ))}
             </nav>
           </aside>
 
-          {/* =====================================
-              RIGHT SERVICE CONTENT
-          ===================================== */}
+          {/* SERVICE DETAILS */}
 
           <div
+            ref={contentRef}
             className="
               min-w-0
+              scroll-mt-[110px]
               lg:min-h-[680px]
             "
             aria-live="polite"
@@ -780,10 +994,7 @@ export default function ServicesContent() {
                 initial={
                   shouldReduceMotion
                     ? false
-                    : {
-                        opacity: 0,
-                        y: 14,
-                      }
+                    : { opacity: 0, y: 14 }
                 }
                 animate={{
                   opacity: 1,
@@ -791,19 +1002,11 @@ export default function ServicesContent() {
                 }}
                 exit={
                   shouldReduceMotion
-                    ? {
-                        opacity: 1,
-                        y: 0,
-                      }
-                    : {
-                        opacity: 0,
-                        y: -8,
-                      }
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: -8 }
                 }
                 transition={{
-                  duration: shouldReduceMotion
-                    ? 0
-                    : 0.35,
+                  duration: shouldReduceMotion ? 0 : 0.35,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="w-full min-w-0"
