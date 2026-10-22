@@ -1,7 +1,7 @@
 import { Manrope, DM_Sans } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import "./globals.css";
-
+import Footer from "@/components/layout/Footer";
 const manrope = Manrope({
   subsets: ["latin", "latin-ext"],
   variable: "--font-manrope",
@@ -33,6 +33,7 @@ export default function RootLayout({ children }) {
       <body className={`${manrope.variable} ${dmSans.variable}`}>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

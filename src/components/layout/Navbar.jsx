@@ -9,16 +9,16 @@ import { AnimatePresence, motion } from "motion/react";
 
 import {
   ArrowUpRight,
+  ChevronDown,
   Phone,
   Camera,
   MessageCircle,
 } from "lucide-react";
 
 import ServiceTicker from "./ServiceTicker";
+import { services, getServiceHref } from "@/data/services";
 
-/* =========================================
-   CONSTANTS
-========================================= */
+const SERVICE_EVENT = "marmara:service-change";
 
 const navigation = [
   {
@@ -31,16 +31,7 @@ const navigation = [
     href: "/#hakkimizda",
     id: "hakkimizda",
   },
-  {
-    label: "Hizmetlerimiz",
-    href: "/#hizmetler",
-    id: "hizmetler",
-  },
-  {
-    label: "Çalışmalarımız",
-    href: "/#calismalar",
-    id: "calismalar",
-  },
+
   {
     label: "İletişim",
     href: "/#iletisim",
@@ -54,6 +45,20 @@ const WHATSAPP_URL = "https://wa.me/905334679437";
 
 const INSTAGRAM_URL =
   "https://www.instagram.com/marmara.tesisat";
+
+/* =========================================
+   SERVICE NAVIGATION EVENT
+========================================= */
+
+function notifyServiceChange(id) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent(SERVICE_EVENT, {
+      detail: { id },
+    })
+  );
+}
 
 /* =========================================
    CONTACT ACTIONS
@@ -167,7 +172,7 @@ function BrandLogo({ mobile = false, onClick }) {
 }
 
 /* =========================================
-   PREMIUM HAMBURGER BUTTON
+   MENU TOGGLE
 ========================================= */
 
 function MenuToggle({ open, onClick }) {
@@ -206,16 +211,8 @@ function MenuToggle({ open, onClick }) {
         initial={false}
         animate={
           open
-            ? {
-                rotate: 45,
-                y: 4.5,
-                width: 21,
-              }
-            : {
-                rotate: 0,
-                y: 0,
-                width: 21,
-              }
+            ? { rotate: 45, y: 4.5, width: 21 }
+            : { rotate: 0, y: 0, width: 21 }
         }
         transition={{
           duration: 0.28,
@@ -233,16 +230,8 @@ function MenuToggle({ open, onClick }) {
         initial={false}
         animate={
           open
-            ? {
-                rotate: -45,
-                y: -4.5,
-                width: 21,
-              }
-            : {
-                rotate: 0,
-                y: 0,
-                width: 15,
-              }
+            ? { rotate: -45, y: -4.5, width: 21 }
+            : { rotate: 0, y: 0, width: 15 }
         }
         transition={{
           duration: 0.28,
@@ -259,6 +248,216 @@ function MenuToggle({ open, onClick }) {
 }
 
 /* =========================================
+   DESKTOP SERVICES DROPDOWN
+========================================= */
+
+function DesktopServicesDropdown({ active }) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () =>
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+  }, []);
+
+  return (
+    <div
+      className="relative flex h-full items-center"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocusCapture={() => setOpen(true)}
+      onBlurCapture={(event) => {
+        if (
+          !event.currentTarget.contains(
+            event.relatedTarget
+          )
+        ) {
+          setOpen(false);
+        }
+      }}
+    >
+      <div className="group flex items-center gap-1">
+        <Link
+          href="/hizmetler"
+          onClick={() => {
+            setOpen(false);
+            notifyServiceChange(null);
+          }}
+          className={`
+            relative whitespace-nowrap py-3
+            text-[11px] font-medium
+            transition-colors duration-300
+            xl:text-[12px]
+            2xl:text-[13px]
+            ${
+              active
+                ? "text-white"
+                : "text-white/65 hover:text-white"
+            }
+          `}
+        >
+          Hizmetlerimiz
+
+          <span
+            className={`
+              absolute bottom-1 left-0
+              h-px bg-[#25B7F5]
+              transition-all duration-300
+              ${
+                active
+                  ? "w-full"
+                  : "w-0 group-hover:w-full"
+              }
+            `}
+          />
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label="Hizmetler alt menüsünü aç"
+          aria-expanded={open}
+          aria-controls="desktop-services-dropdown"
+          className="
+            flex h-8 w-6
+            items-center justify-center
+            text-white/70
+            hover:text-[#25B7F5]
+            focus-visible:outline-2
+            focus-visible:outline-[#25B7F5]
+          "
+        >
+          <ChevronDown
+            size={15}
+            className={`
+              transition-transform duration-300
+              ${open ? "rotate-180" : ""}
+            `}
+          />
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="desktop-services-dropdown"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{
+              duration: 0.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="
+              absolute left-1/2 top-full
+              z-[70] w-[350px]
+              -translate-x-1/2
+              overflow-hidden rounded-b-xl
+              border border-white/10
+              bg-[#0D1C2C]
+              shadow-[0_24px_65px_rgba(0,0,0,0.35)]
+              xl:w-[390px]
+            "
+          >
+            <div className="border-b border-white/10 px-5 py-4">
+              <span
+                className="
+                  text-[10px] font-semibold
+                  uppercase tracking-[0.2em]
+                  text-[#25B7F5]
+                "
+              >
+                MARMARA TESİSAT
+              </span>
+
+              <p className="mt-1 text-[14px] font-semibold text-white">
+                Hizmetlerimiz
+              </p>
+            </div>
+
+            <div
+              className="
+                max-h-[min(65vh,520px)]
+                overflow-y-auto
+                overscroll-contain py-2
+              "
+            >
+              <Link
+                href="/hizmetler"
+                onClick={() => {
+                  setOpen(false);
+                  notifyServiceChange(null);
+                }}
+                className="
+                  group flex items-center
+                  justify-between gap-3
+                  border-b border-white/10
+                  px-5 py-3
+                  text-[12px] font-semibold
+                  text-[#25B7F5]
+                  transition-colors
+                  hover:bg-white/[0.06]
+                "
+              >
+                Tüm Hizmetler
+
+                <ArrowUpRight size={16} />
+              </Link>
+
+              {services.map((service) => (
+                <Link
+                  key={service.id}
+                  href={getServiceHref(service.id)}
+                  onClick={() => {
+                    setOpen(false);
+                    notifyServiceChange(service.id);
+                  }}
+                  className="
+                    group flex items-center
+                    justify-between gap-3
+                    px-5 py-3
+                    text-[12px] leading-relaxed
+                    text-white/75
+                    transition-all duration-200
+                    hover:bg-white/[0.06]
+                    hover:text-white
+                  "
+                >
+                  <span className="min-w-0">
+                    {service.title}
+                  </span>
+
+                  <ArrowUpRight
+                    size={14}
+                    className="
+                      shrink-0 text-white/30
+                      transition-all duration-200
+                      group-hover:-translate-y-0.5
+                      group-hover:translate-x-0.5
+                      group-hover:text-[#25B7F5]
+                    "
+                  />
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* =========================================
    NAVBAR
 ========================================= */
 
@@ -267,12 +466,12 @@ export default function Navbar() {
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] =
+    useState(false);
   const [activeSection, setActiveSection] =
     useState("anasayfa");
 
-  /* =========================================
-     SCROLL SHADOW ONLY
-  ========================================= */
+  /* SCROLL SHADOW */
 
   useEffect(() => {
     const handleScroll = () => {
@@ -285,22 +484,21 @@ export default function Navbar() {
       passive: true,
     });
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () =>
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
   }, []);
 
-  /* =========================================
-     CLOSE ON ROUTE CHANGE
-  ========================================= */
+  /* ROUTE CHANGE */
 
   useEffect(() => {
     setMenuOpen(false);
+    setMobileServicesOpen(false);
   }, [pathname]);
 
-  /* =========================================
-     ACTIVE SECTION
-  ========================================= */
+  /* ACTIVE SECTION */
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -330,16 +528,14 @@ export default function Navbar() {
       }
     );
 
-    sections.forEach((section) => {
-      observer.observe(section);
-    });
+    sections.forEach((section) =>
+      observer.observe(section)
+    );
 
     return () => observer.disconnect();
   }, [pathname]);
 
-  /* =========================================
-     MOBILE MENU BEHAVIOR
-  ========================================= */
+  /* MOBILE MENU */
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -380,23 +576,116 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setMobileServicesOpen(false);
+  };
 
   const isActive = (item) =>
     pathname === "/" &&
     activeSection === item.id;
 
+  const servicesActive = pathname === "/hizmetler";
+
+  const renderDesktopLink = (item) => (
+    <Link
+      key={item.id}
+      href={item.href}
+      aria-current={
+        isActive(item) ? "location" : undefined
+      }
+      className={`
+        group relative
+        whitespace-nowrap py-3
+        text-[11px] font-medium
+        transition-colors duration-300
+        xl:text-[12px]
+        2xl:text-[13px]
+        ${
+          isActive(item)
+            ? "text-white"
+            : "text-white/65 hover:text-white"
+        }
+      `}
+    >
+      {item.label}
+
+      <span
+        className={`
+          absolute bottom-1 left-0
+          h-px bg-[#25B7F5]
+          transition-all duration-300
+          ${
+            isActive(item)
+              ? "w-full"
+              : "w-0 group-hover:w-full"
+          }
+        `}
+      />
+    </Link>
+  );
+
+  const renderMobileLink = (item, index) => (
+    <motion.div
+      key={item.id}
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        duration: 0.35,
+        delay: index * 0.055,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="border-b border-white/10"
+    >
+      <Link
+        href={item.href}
+        onClick={closeMenu}
+        className="
+          group flex items-center
+          justify-between gap-4 py-5
+        "
+      >
+        <span
+          className={`
+            font-[family-name:var(--font-manrope)]
+            text-[clamp(21px,5vw,30px)]
+            font-semibold tracking-tight
+            transition-colors duration-300
+            ${
+              isActive(item)
+                ? "text-[#25B7F5]"
+                : "text-white group-hover:text-[#25B7F5]"
+            }
+          `}
+        >
+          {item.label}
+        </span>
+
+        <ArrowUpRight
+          size={19}
+          strokeWidth={1.4}
+          className="
+            shrink-0 text-white/40
+            transition-all duration-300
+            group-hover:-translate-y-1
+            group-hover:translate-x-1
+            group-hover:text-[#25B7F5]
+          "
+        />
+      </Link>
+    </motion.div>
+  );
+
   return (
     <>
       {/* =====================================
-          FIXED HEADER + SERVICE TICKER
+          FIXED HEADER
       ===================================== */}
 
       <header
         className={`
           fixed inset-x-0 top-0 z-50
-          w-full
-          border-b border-white/10
+          w-full border-b border-white/10
           bg-[#091421]
           transition-shadow duration-500
           ${
@@ -406,50 +695,39 @@ export default function Navbar() {
           }
         `}
       >
-        {/* SERVICE TICKER - ALWAYS VISIBLE */}
+        {/* SERVICE TICKER */}
 
         <div className="relative w-full overflow-hidden">
           <ServiceTicker />
         </div>
 
-        {/* =====================================
-            NAVBAR CONTAINER
-        ===================================== */}
+        {/* NAVBAR CONTAINER */}
 
         <div
           className="
             relative mx-auto
             h-[84px] w-full
             max-w-[1600px]
-            px-3
-            sm:px-5
-            lg:h-[100px]
-            lg:px-6
+            px-3 sm:px-5
+            lg:h-[100px] lg:px-6
             xl:px-10
           "
         >
-          {/* =================================
-              MOBILE NAVBAR
-          ================================= */}
+          {/* MOBILE NAVBAR */}
 
           <div
             className="
               grid h-full w-full
               grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]
-              items-center
-              lg:hidden
+              items-center lg:hidden
             "
           >
-            {/* LOGO */}
-
             <div className="min-w-0 justify-self-start">
               <BrandLogo
                 mobile
                 onClick={closeMenu}
               />
             </div>
-
-            {/* CONTACT ACTIONS */}
 
             <div
               className="
@@ -461,8 +739,6 @@ export default function Navbar() {
               <ContactActions />
             </div>
 
-            {/* MOBILE MENU TOGGLE */}
-
             <MenuToggle
               open={menuOpen}
               onClick={() =>
@@ -471,9 +747,7 @@ export default function Navbar() {
             />
           </div>
 
-          {/* =================================
-              DESKTOP NAVBAR
-          ================================= */}
+          {/* DESKTOP NAVBAR */}
 
           <div
             className="
@@ -481,68 +755,31 @@ export default function Navbar() {
               items-center
               lg:grid
               lg:grid-cols-[auto_minmax(0,1fr)_auto]
-              lg:gap-4
-              xl:gap-7
+              lg:gap-4 xl:gap-7
             "
           >
-            {/* LOGO */}
-
             <BrandLogo />
-
-            {/* NAVIGATION */}
 
             <nav
               aria-label="Ana navigasyon"
               className="
                 flex min-w-0
                 items-center justify-center
-                gap-3
-                xl:gap-5
-                2xl:gap-8
+                gap-3 xl:gap-5 2xl:gap-8
               "
             >
-              {navigation.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  aria-current={
-                    isActive(item)
-                      ? "location"
-                      : undefined
-                  }
-                  className={`
-                    group relative
-                    whitespace-nowrap py-3
-                    text-[11px] font-medium
-                    transition-colors duration-300
-                    xl:text-[12px]
-                    2xl:text-[13px]
-                    ${
-                      isActive(item)
-                        ? "text-white"
-                        : "text-white/65 hover:text-white"
-                    }
-                  `}
-                >
-                  {item.label}
+              {navigation
+                .slice(0, 2)
+                .map(renderDesktopLink)}
 
-                  <span
-                    className={`
-                      absolute bottom-1 left-0
-                      h-px bg-[#25B7F5]
-                      transition-all duration-300
-                      ${
-                        isActive(item)
-                          ? "w-full"
-                          : "w-0 group-hover:w-full"
-                      }
-                    `}
-                  />
-                </Link>
-              ))}
+              <DesktopServicesDropdown
+                active={servicesActive}
+              />
+
+              {navigation
+                .slice(2)
+                .map(renderDesktopLink)}
             </nav>
-
-            {/* CONTACT ACTIONS */}
 
             <div
               className="
@@ -568,38 +805,24 @@ export default function Navbar() {
             role="dialog"
             aria-modal="true"
             aria-label="Mobil navigasyon"
-            initial={{
-              opacity: 0,
-              y: -14,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: -12,
-            }}
+            initial={{ opacity: 0, y: -14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
             transition={{
               duration: 0.3,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="
               fixed inset-0 z-40
-              flex h-dvh w-full
-              flex-col
+              flex h-dvh w-full flex-col
               overflow-x-hidden
               overflow-y-auto
               bg-[#091421]
-              px-6 pb-8
-              pt-[155px]
-              text-white
-              sm:px-10
+              px-6 pb-8 pt-[155px]
+              text-white sm:px-10
               lg:hidden
             "
           >
-            {/* NAVIGATION LINKS */}
-
             <nav
               aria-label="Mobil navigasyon"
               className="
@@ -608,66 +831,154 @@ export default function Navbar() {
                 flex-col
               "
             >
-              {navigation.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{
-                    opacity: 0,
-                    x: -12,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    duration: 0.35,
-                    delay: index * 0.055,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="border-b border-white/10"
-                >
-                  <Link
-                    href={item.href}
-                    onClick={closeMenu}
-                    className="
-                      group flex items-center
-                      justify-between gap-4
-                      py-5
-                    "
-                  >
-                    <span
-                      className={`
-                        font-[family-name:var(--font-manrope)]
-                        text-[clamp(21px,5vw,30px)]
-                        font-semibold tracking-tight
-                        transition-colors duration-300
-                        ${
-                          isActive(item)
-                            ? "text-[#25B7F5]"
-                            : "text-white group-hover:text-[#25B7F5]"
-                        }
-                      `}
-                    >
-                      {item.label}
-                    </span>
+              {navigation
+                .slice(0, 2)
+                .map(renderMobileLink)}
 
-                    <ArrowUpRight
-                      size={19}
-                      strokeWidth={1.4}
-                      className="
-                        shrink-0 text-white/40
-                        transition-all duration-300
-                        group-hover:-translate-y-1
-                        group-hover:translate-x-1
-                        group-hover:text-[#25B7F5]
-                      "
-                    />
-                  </Link>
-                </motion.div>
-              ))}
+              {/* MOBILE SERVICES ACCORDION */}
+
+              <div className="border-b border-white/10">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileServicesOpen(
+                      (prev) => !prev
+                    )
+                  }
+                  aria-expanded={mobileServicesOpen}
+                  aria-controls="mobile-services-list"
+                  className="
+                    flex w-full items-center
+                    justify-between gap-4 py-5
+                    text-left
+                  "
+                >
+                  <span
+                    className={`
+                      font-[family-name:var(--font-manrope)]
+                      text-[clamp(21px,5vw,30px)]
+                      font-semibold tracking-tight
+                      ${
+                        servicesActive ||
+                        mobileServicesOpen
+                          ? "text-[#25B7F5]"
+                          : "text-white"
+                      }
+                    `}
+                  >
+                    Hizmetlerimiz
+                  </span>
+
+                  <ChevronDown
+                    size={22}
+                    className={`
+                      shrink-0 text-[#25B7F5]
+                      transition-transform duration-300
+                      ${
+                        mobileServicesOpen
+                          ? "rotate-180"
+                          : ""
+                      }
+                    `}
+                  />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {mobileServicesOpen && (
+                    <motion.div
+                      id="mobile-services-list"
+                      initial={{
+                        height: 0,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        height: "auto",
+                        opacity: 1,
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div
+                        className="
+                          mb-4 border-l
+                          border-[#25B7F5]/35
+                          pl-4
+                        "
+                      >
+                        <Link
+                          href="/hizmetler"
+                          onClick={() => {
+                            closeMenu();
+                            notifyServiceChange(null);
+                          }}
+                          className="
+                            flex items-center
+                            justify-between gap-3
+                            py-3 text-[14px]
+                            font-semibold
+                            text-[#25B7F5]
+                          "
+                        >
+                          Tüm Hizmetler
+                          <ArrowUpRight size={16} />
+                        </Link>
+
+                        {services.map((service) => (
+                          <Link
+                            key={service.id}
+                            href={getServiceHref(
+                              service.id
+                            )}
+                            onClick={() => {
+                              closeMenu();
+                              notifyServiceChange(
+                                service.id
+                              );
+                            }}
+                            className="
+                              flex items-center
+                              justify-between gap-3
+                              border-t border-white/[0.06]
+                              py-3 text-[13px]
+                              leading-relaxed
+                              text-white/75
+                              transition-colors
+                              hover:text-[#25B7F5]
+                            "
+                          >
+                            <span>
+                              {service.title}
+                            </span>
+
+                            <ArrowUpRight
+                              size={14}
+                              className="
+                                shrink-0
+                                text-white/35
+                              "
+                            />
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {navigation
+                .slice(2)
+                .map((item, index) =>
+                  renderMobileLink(item, index + 3)
+                )}
             </nav>
 
-            {/* MOBILE MENU FOOTER */}
+            {/* MOBILE FOOTER */}
 
             <div
               className="
@@ -690,11 +1001,7 @@ export default function Navbar() {
                   Marmara Tesisat
                 </span>
 
-                <span
-                  className="
-                    text-[11px] text-white/45
-                  "
-                >
+                <span className="text-[11px] text-white/45">
                   © 2026 Tüm Hakları Saklıdır.
                 </span>
               </div>
@@ -707,9 +1014,8 @@ export default function Navbar() {
                 title="Instagram"
                 className="
                   flex h-11 w-11
-                  shrink-0
-                  items-center justify-center
-                  rounded-full
+                  shrink-0 items-center
+                  justify-center rounded-full
                   border border-white/15
                   text-white/70
                   transition-all duration-300

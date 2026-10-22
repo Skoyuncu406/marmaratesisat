@@ -52,38 +52,58 @@ export default function About() {
       id="hakkimizda"
       aria-labelledby="about-heading"
       className="
-        relative isolate
+        relative
         w-full min-w-0
-        overflow-hidden
-        bg-[#F7F9FC]
-        text-[#13263A]
         scroll-mt-[85px]
+        overflow-x-clip
+        bg-transparent
+        text-[#13263A]
+        lg:scroll-mt-[100px]
       "
     >
-      {/* DECORATIVE BACKGROUND */}
+      {/* =====================================
+          SUBTLE READABILITY GRADIENT
+      ===================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute inset-0 z-0
+          bg-gradient-to-r
+          from-white/65
+          via-white/35
+          to-white/10
+        "
+      />
+
+      {/* SUBTLE BLUE GLOW */}
 
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute right-0 top-0
-          h-[500px] w-[500px]
+          h-[450px] w-[450px]
           max-w-full
           rounded-full
           bg-[#079FE3]/[0.035]
-          blur-[100px]
+          blur-[110px]
         "
       />
 
-      {/* SECTION CONTAINER */}
+      {/* =====================================
+          SECTION CONTAINER
+      ===================================== */}
 
       <div
         className="
-          relative mx-auto
-          w-full max-w-[1600px]
+          relative z-10
+          mx-auto w-full
+          max-w-[1600px]
           px-6 py-20
           sm:px-10 sm:py-24
-          lg:px-16 lg:py-32
+          lg:px-16 lg:py-28
           xl:px-20
         "
       >
@@ -102,12 +122,7 @@ export default function About() {
             lg:mb-14
           "
         >
-          <span
-            className="
-              h-px w-10
-              bg-[#079FE3]
-            "
-          />
+          <span className="h-px w-10 bg-[#079FE3]" />
 
           <span
             className="
@@ -121,20 +136,22 @@ export default function About() {
           </span>
         </motion.div>
 
-        {/* MAIN GRID */}
+        {/* =====================================
+            MAIN GRID
+        ===================================== */}
 
         <div
           className="
-            grid items-center
-            gap-14
+            grid min-w-0
+            items-center gap-14
             lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]
             lg:gap-16
             xl:gap-24
           "
         >
-          {/* =================================
+          {/* =====================================
               LEFT CONTENT
-          ================================= */}
+          ===================================== */}
 
           <motion.div
             {...motionProps}
@@ -196,12 +213,11 @@ export default function About() {
 
             <div
               className="
-                mt-6 flex
-                max-w-[670px]
+                mt-6 flex max-w-[670px]
                 flex-col gap-5
                 text-[14px]
                 leading-[1.95]
-                text-[#64788A]
+                text-[#526A7F]
                 sm:text-[15px]
               "
             >
@@ -304,9 +320,9 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* =================================
+          {/* =====================================
               RIGHT IMAGE
-          ================================= */}
+          ===================================== */}
 
           <motion.div
             initial={
@@ -379,8 +395,7 @@ export default function About() {
 
               <div
                 className="
-                  absolute bottom-0 left-0
-                  right-0
+                  absolute bottom-0 left-0 right-0
                   p-7
                   sm:p-9
                 "
@@ -458,7 +473,7 @@ export default function About() {
           }}
           className="
             mt-20
-            border-t border-[#D7E1EA]
+            border-t border-[#C9D9E6]/70
             pt-8
             lg:mt-28
           "
@@ -516,7 +531,7 @@ export default function About() {
             </div>
 
             <Link
-              href="/#hizmetler"
+              href="/hizmetler"
               className="
                 group inline-flex
                 items-center gap-2
