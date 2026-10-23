@@ -48,7 +48,7 @@ function ServiceGroup({ duplicate = false }) {
         const Icon = service.icon;
 
         return (
-          <Link
+          <span
             key={service.href}
             href={service.href}
             tabIndex={duplicate ? -1 : undefined}
@@ -80,7 +80,7 @@ function ServiceGroup({ duplicate = false }) {
               aria-hidden="true"
               className="ml-5 h-4 w-px bg-white/35"
             />
-          </Link>
+          </span>
         );
       })}
     </div>
