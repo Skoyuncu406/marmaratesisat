@@ -2,6 +2,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+
 import {
   ArrowUpRight,
   MapPin,
@@ -9,17 +10,21 @@ import {
   Navigation,
   Phone,
 } from "lucide-react";
+
 import { FaInstagram } from "react-icons/fa6";
 
 /* =========================================
    CONTACT INFORMATION
 ========================================= */
 
-const PHONE = "0533 467 94 37";
-const PHONE_URL = "tel:+905334679437";
+const PHONE_PRIMARY = "0533 467 94 37";
+const PHONE_PRIMARY_URL = "tel:+905334679437";
+
+const PHONE_SECONDARY = "0531 576 42 23";
+const PHONE_SECONDARY_URL = "tel:+905315764223";
 
 const ADDRESS =
-  "Kocasinan Merkez Mahallesi, Şirin 3 Sokak, No: 24/C, Bahçelievler / İstanbul";
+  "Kocasinan Merkez Mahallesi, Şirin Sokak, No: 24/C, Bahçelievler / İstanbul";
 
 const MAP_QUERY = encodeURIComponent(ADDRESS);
 
@@ -44,9 +49,16 @@ const INSTAGRAM_URL =
 
 const contactItems = [
   {
-    label: "TELEFON",
-    title: PHONE,
-    href: PHONE_URL,
+    label: "TELEFON 1",
+    title: PHONE_PRIMARY,
+    href: PHONE_PRIMARY_URL,
+    icon: Phone,
+    external: false,
+  },
+  {
+    label: "TELEFON 2",
+    title: PHONE_SECONDARY,
+    href: PHONE_SECONDARY_URL,
     icon: Phone,
     external: false,
   },
@@ -111,7 +123,7 @@ function ContactItem({ item }) {
         group flex w-full min-w-0
         items-center gap-4
         border-b border-[#C8D9E7]/80
-        py-4
+        py-3.5
         transition-colors duration-300
         hover:border-[#079FE3]/60
       "
@@ -190,7 +202,7 @@ function ContactInformation() {
 
       <p
         className="
-          mt-5 max-w-[450px]
+          mt-4 max-w-[450px]
           border-l-2 border-[#079FE3]
           pl-4
           text-[12px] leading-6
@@ -378,7 +390,7 @@ export default function Contact() {
           justify-center
           px-5 py-10
           sm:px-10 sm:py-12
-          lg:px-16 lg:py-7
+          lg:px-16 lg:py-6
           xl:px-20
         "
       >
@@ -386,7 +398,7 @@ export default function Contact() {
 
         <motion.div
           {...reveal}
-          className="mb-7 max-w-[780px] lg:mb-8"
+          className="mb-6 max-w-[780px] lg:mb-7"
         >
           <div className="mb-3 flex items-center gap-3">
             <span className="h-px w-8 bg-[#079FE3]" />
@@ -453,7 +465,7 @@ export default function Contact() {
 
         <div
           className="
-            mt-8 flex flex-wrap
+            mt-7 flex flex-wrap
             items-center justify-between
             gap-3
             border-t border-[#C8D9E7]/80

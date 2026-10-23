@@ -10,6 +10,8 @@ import {
 
 import Image from "next/image";
 
+import { createPortal } from "react-dom";
+
 import {
   AnimatePresence,
   motion,
@@ -408,6 +410,7 @@ function ServiceDetails({
    MOBILE SERVICES DRAWER
 ========================================= */
 
+
 function MobileServicesDrawer({
   open,
   onClose,
@@ -417,7 +420,15 @@ function MobileServicesDrawer({
   shouldReduceMotion,
   closeButtonRef,
 }) {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -434,13 +445,14 @@ function MobileServicesDrawer({
               duration: shouldReduceMotion ? 0 : 0.25,
             }}
             className="
-              fixed inset-0 z-[120]
-              bg-[#091421]/55
+              fixed inset-0
+              z-[9998]
+              bg-[#091421]/65
               lg:hidden
             "
           />
 
-          {/* DRAWER */}
+          {/* MOBILE DRAWER */}
 
           <motion.aside
             role="dialog"
@@ -463,16 +475,16 @@ function MobileServicesDrawer({
             }}
             className="
               fixed inset-y-0 left-0
-              z-[130]
+              z-[9999]
               flex w-[min(86vw,360px)]
               flex-col
               overflow-hidden
               bg-[#F3F8FC]
-              shadow-[20px_0_60px_rgba(9,20,33,0.2)]
+              shadow-[20px_0_60px_rgba(9,20,33,0.25)]
               lg:hidden
             "
           >
-            {/* DRAWER HEADER */}
+            {/* HEADER */}
 
             <div
               className="
@@ -480,7 +492,8 @@ function MobileServicesDrawer({
                 items-center justify-between
                 gap-4
                 border-b border-[#C9D8E6]
-                px-5 py-6
+                px-5 pb-5
+                pt-[max(24px,env(safe-area-inset-top))]
               "
             >
               <div>
@@ -527,7 +540,7 @@ function MobileServicesDrawer({
               </button>
             </div>
 
-            {/* SELECTED SERVICE COUNTER */}
+            {/* COUNTER */}
 
             <div
               className="
@@ -558,14 +571,16 @@ function MobileServicesDrawer({
               </span>
             </div>
 
-            {/* SCROLLABLE SERVICE LIST */}
+            {/* SERVICE LIST */}
 
             <nav
               aria-label="Mobil hizmet seçimi"
               className="
                 min-h-0 flex-1
-                overflow-y-auto overscroll-contain
-                px-3 pb-8
+                overflow-y-auto
+                overscroll-contain
+                px-3
+                pb-[max(32px,env(safe-area-inset-bottom))]
               "
             >
               {services.map((service, index) => (
@@ -581,9 +596,11 @@ function MobileServicesDrawer({
           </motion.aside>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
+
 
 /* =========================================
    MAIN COMPONENT
@@ -777,53 +794,86 @@ export default function ServicesContent() {
 
       <ServicesBackground />
 
-      {/* =====================================
-          MOBILE FLOATING MENU BUTTON
-      ===================================== */}
+   
+{/* MOBILE FLOATING MENU BUTTON */}
 
-      {!mobileMenuOpen && (
-        <button
-          ref={menuButtonRef}
-          type="button"
-          onClick={() => setMobileMenuOpen(true)}
-          aria-label="Hizmetler menüsünü aç"
-          aria-expanded={false}
-          className="
-            fixed left-0 top-1/2
-            z-[110]
-            flex min-h-[108px]
-            w-[43px]
-            -translate-y-1/2
-            flex-col
-            items-center justify-center
-            gap-2
-            rounded-r-xl
-            border border-l-0
-            border-[#079FE3]/40
-            bg-[#091421]
-            px-2 py-4
-            text-white
-            shadow-[4px_4px_20px_rgba(9,20,33,0.2)]
-            transition-colors duration-300
-            hover:bg-[#079FE3]
-            focus-visible:outline-2
-            focus-visible:outline-[#079FE3]
-            lg:hidden
-          "
-        >
-          <Menu size={19} />
+{!mobileMenuOpen && (
+  <motion.button
+    ref={menuButtonRef}
+    type="button"
+    onClick={() => setMobileMenuOpen(true)}
+    aria-label="Hizmetler menüsünü aç"
+    aria-expanded={false}
+    initial={false}
+    animate={
+      shouldReduceMotion
+        ? undefined
+        : {
+            boxShadow: [
+              "4px 4px 16px rgba(9,20,33,0.18)",
+              "4px 4px 28px rgba(7,159,227,0.55)",
+              "4px 4px 16px rgba(9,20,33,0.18)",
+            ],
+          }
+    }
+    transition={{
+      duration: 2.8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+    className="
+      fixed left-0 top-1/2
+      z-[110]
+      flex min-h-[108px]
+      w-[43px]
+      -translate-y-1/2
+      flex-col
+      items-center justify-center
+      gap-2
+      rounded-r-xl
+      border border-l-0
+      border-[#079FE3]/50
+      bg-[#091421]
+      px-2 py-4
+      text-white
+      transition-colors duration-300
+      hover:bg-[#079FE3]
+      focus-visible:outline-2
+      focus-visible:outline-[#079FE3]
+      lg:hidden
+    "
+  >
+    <motion.span
+      aria-hidden="true"
+      animate={
+        shouldReduceMotion
+          ? undefined
+          : {
+              x: [0, 3, 0],
+            }
+      }
+      transition={{
+        duration: 2.8,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+      className="flex items-center justify-center"
+    >
+      <Menu size={19} />
+    </motion.span>
 
-          <span
-            className="
-              text-[10px] font-bold
-              tracking-[0.08em]
-              [writing-mode:vertical-rl]
-            "
-          >
-            HİZMETLER
-          </span>
-        </button>
-      )}
+    <span
+      className="
+        text-[10px] font-bold
+        tracking-[0.08em]
+        [writing-mode:vertical-rl]
+      "
+    >
+      HİZMETLER
+    </span>
+  </motion.button>
+)}
+
 
       {/* MOBILE DRAWER */}
 

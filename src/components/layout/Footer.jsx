@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+
 import {
   ArrowUp,
   ArrowUpRight,
@@ -12,6 +13,7 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
+
 import { FaInstagram } from "react-icons/fa6";
 
 import { services } from "@/data/services";
@@ -20,8 +22,11 @@ import { services } from "@/data/services";
    CONSTANTS
 ========================================= */
 
-const PHONE = "0533 467 94 37";
-const PHONE_URL = "tel:+905334679437";
+const PHONE_PRIMARY = "0533 467 94 37";
+const PHONE_PRIMARY_URL = "tel:+905334679437";
+
+const PHONE_SECONDARY = "0531 576 42 23";
+const PHONE_SECONDARY_URL = "tel:+905315764223";
 
 const WHATSAPP_URL =
   "https://wa.me/905334679437?text=" +
@@ -33,7 +38,7 @@ const INSTAGRAM_URL =
   "https://www.instagram.com/marmara.tesisat";
 
 const ADDRESS =
-  "Kocasinan Merkez Mahallesi, Şirin 3 Sokak, No: 24/C, Bahçelievler / İstanbul";
+  "Kocasinan Merkez Mahallesi, Şirin Sokak, No: 24/C, Bahçelievler / İstanbul";
 
 const DIRECTIONS_URL =
   "https://www.google.com/maps/dir/?api=1&destination=" +
@@ -97,12 +102,62 @@ function FooterLink({ href, children, onClick }) {
 }
 
 /* =========================================
+   FOOTER PHONE ITEM
+========================================= */
+
+function FooterPhone({ label, number, href }) {
+  return (
+    <a
+      href={href}
+      aria-label={`${label}: ${number} numarasını ara`}
+      className="group flex items-start gap-3"
+    >
+      <Phone
+        size={18}
+        className="
+          mt-1 shrink-0
+          text-[#25B7F5]
+        "
+      />
+
+      <div className="min-w-0">
+        <span
+          className="
+            block text-[10px]
+            font-bold uppercase
+            tracking-[0.15em]
+            text-white/40
+          "
+        >
+          {label}
+        </span>
+
+        <span
+          className="
+            mt-1 block
+            text-[14px]
+            font-semibold
+            text-white
+            transition-colors
+            group-hover:text-[#25B7F5]
+          "
+        >
+          {number}
+        </span>
+      </div>
+    </a>
+  );
+}
+
+/* =========================================
    MAIN FOOTER
 ========================================= */
 
 export default function Footer() {
   const pathname = usePathname();
-  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  const [showBackToTop, setShowBackToTop] =
+    useState(false);
 
   useEffect(() => {
     const updateScroll = () => {
@@ -218,9 +273,7 @@ export default function Footer() {
             xl:gap-x-12
           "
         >
-          {/* =====================================
-              BRAND
-          ===================================== */}
+          {/* BRAND */}
 
           <div
             className="
@@ -263,8 +316,7 @@ export default function Footer() {
                 <span
                   className="
                     block text-[11px]
-                    font-semibold
-                    uppercase
+                    font-semibold uppercase
                     tracking-[0.34em]
                     text-[#25B7F5]
                   "
@@ -277,8 +329,7 @@ export default function Footer() {
             <p
               className="
                 mt-6 max-w-[360px]
-                text-[13px]
-                leading-7
+                text-[13px] leading-7
                 text-[#A7B9C9]
               "
             >
@@ -331,7 +382,7 @@ export default function Footer() {
               </a>
 
               <a
-                href={PHONE_URL}
+                href={PHONE_PRIMARY_URL}
                 aria-label="Marmara Tesisat Telefon"
                 className="
                   flex h-10 w-10
@@ -349,9 +400,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* =====================================
-              QUICK LINKS
-          ===================================== */}
+          {/* QUICK LINKS */}
 
           <div
             className="
@@ -387,9 +436,7 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* =====================================
-              SERVICES
-          ===================================== */}
+          {/* SERVICES */}
 
           <div
             className="
@@ -416,9 +463,7 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* =====================================
-              CONTACT
-          ===================================== */}
+          {/* CONTACT */}
 
           <div
             className="
@@ -430,49 +475,22 @@ export default function Footer() {
               İletişim
             </FooterTitle>
 
-            <div className="flex flex-col gap-6">
-              {/* PHONE */}
+            <div className="flex flex-col gap-5">
+              {/* PRIMARY PHONE */}
 
-              <a
-                href={PHONE_URL}
-                className="
-                  group flex items-start gap-3
-                "
-              >
-                <Phone
-                  size={18}
-                  className="
-                    mt-1 shrink-0
-                    text-[#25B7F5]
-                  "
-                />
+              <FooterPhone
+                label="TELEFON 1"
+                number={PHONE_PRIMARY}
+                href={PHONE_PRIMARY_URL}
+              />
 
-                <div className="min-w-0">
-                  <span
-                    className="
-                      block text-[10px]
-                      font-bold uppercase
-                      tracking-[0.15em]
-                      text-white/40
-                    "
-                  >
-                    TELEFON
-                  </span>
+              {/* SECONDARY PHONE - CALL ONLY */}
 
-                  <span
-                    className="
-                      mt-1 block
-                      text-[14px]
-                      font-semibold
-                      text-white
-                      transition-colors
-                      group-hover:text-[#25B7F5]
-                    "
-                  >
-                    {PHONE}
-                  </span>
-                </div>
-              </a>
+              <FooterPhone
+                label="TELEFON 2"
+                number={PHONE_SECONDARY}
+                href={PHONE_SECONDARY_URL}
+              />
 
               {/* ADDRESS */}
 
@@ -519,7 +537,7 @@ export default function Footer() {
                 </div>
               </a>
 
-              {/* WHATSAPP */}
+              {/* WHATSAPP - PRIMARY PHONE ONLY */}
 
               <a
                 href={WHATSAPP_URL}
@@ -552,9 +570,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* =====================================
-            FOOTER BOTTOM
-        ===================================== */}
+        {/* FOOTER BOTTOM */}
 
         <div
           className="

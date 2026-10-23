@@ -185,18 +185,7 @@ export default function Hero() {
         "
       />
 
-      {/* BLUE ACCENT */}
 
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute left-0 top-0 z-[4]
-          h-full w-[3px]
-          bg-[#079FE3]/70
-          shadow-[0_0_22px_rgba(7,159,227,0.35)]
-        "
-      />
 
       {/* =====================================
           HERO CONTENT
