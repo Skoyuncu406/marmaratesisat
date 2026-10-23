@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -498,42 +498,137 @@ export default function Navbar() {
     setMobileServicesOpen(false);
   }, [pathname]);
 
-  /* ACTIVE SECTION */
+ 
+  /* =========================================
+     NAVBAR HEIGHT AND SCROLL SPY
+  ========================================= */
+
+  const navigationLockRef = useRef(null);
+
+  useEffect(() => {
+    const header = document.getElementById("marmara-fixed-header");
+    if (!header) return;
+
+    const updateHeight = () => {
+      const height = Math.ceil(header.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--marmara-header-height", `${height}px`);
+      document.documentElement.style.scrollPaddingTop = `${height}px`;
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+      document.documentElement.style.removeProperty("--marmara-header-height");
+      document.documentElement.style.removeProperty("scroll-padding-top");
+    };
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/") return;
 
-    const sections = navigation
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean);
+    let frameId = null;
 
-    if (!sections.length) return;
+    const updateActiveSection = () => {
+      if (navigationLockRef.current !== null) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              b.intersectionRatio - a.intersectionRatio
-          );
+      const header = document.getElementById("marmara-fixed-header");
+      const headerHeight = header?.getBoundingClientRect().height ?? 100;
+      const checkpoint = headerHeight + 3;
+      const about = document.getElementById("hakkimizda");
+      const contact = document.getElementById("iletisim");
 
-        if (visible.length > 0) {
-          setActiveSection(visible[0].target.id);
-        }
-      },
-      {
-        rootMargin: "-160px 0px -45% 0px",
-        threshold: [0, 0.2, 0.5, 1],
+      let current = "anasayfa";
+      if (about && about.getBoundingClientRect().top <= checkpoint) {
+        current = "hakkimizda";
       }
-    );
+      if (contact && contact.getBoundingClientRect().top <= checkpoint) {
+        current = "iletisim";
+      }
+      setActiveSection((previous) => previous === current ? previous : current);
+    };
 
-    sections.forEach((section) =>
-      observer.observe(section)
-    );
+    const onScroll = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        updateActiveSection();
+      });
+    };
 
-    return () => observer.disconnect();
+    const onHistoryChange = () => {
+      const id = window.location.hash.slice(1);
+      if (navigation.some((item) => item.id === id)) {
+        setActiveSection(id);
+      } else {
+        onScroll();
+      }
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("hashchange", onHistoryChange);
+    window.addEventListener("popstate", onHistoryChange);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("hashchange", onHistoryChange);
+      window.removeEventListener("popstate", onHistoryChange);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
   }, [pathname]);
+
+  /* =========================================
+     SECTION NAVIGATION
+  ========================================= */
+
+  const handleSectionNavigation = (event, id) => {
+    if (pathname !== "/") {
+      closeMenu();
+      return;
+    }
+
+    const target = document.getElementById(id);
+    if (!target && id !== "anasayfa") return;
+
+    event.preventDefault();
+    closeMenu();
+
+    const header = document.getElementById("marmara-fixed-header");
+    const headerHeight = header?.getBoundingClientRect().height ?? 100;
+    const targetTop = target
+      ? window.scrollY + target.getBoundingClientRect().top
+      : 0;
+    const destination = id === "anasayfa"
+      ? 0
+      : Math.max(0, targetTop - headerHeight);
+
+    setActiveSection(id);
+    window.history.pushState(null, "", `/#${id}`);
+
+    // Keep the chosen link highlighted during smooth scrolling.
+    navigationLockRef.current = id;
+    window.scrollTo({ top: destination, behavior: "smooth" });
+
+    // Unlock when scrolling reaches the target (or user interrupts it).
+    const startedAt = performance.now();
+    const checkArrival = () => {
+      if (navigationLockRef.current !== id) return;
+      if (Math.abs(window.scrollY - destination) < 2 ||
+          performance.now() - startedAt > 1800) {
+        navigationLockRef.current = null;
+        return;
+      }
+      window.requestAnimationFrame(checkArrival);
+    };
+    window.requestAnimationFrame(checkArrival);
+  };
 
   /* MOBILE MENU */
 
@@ -591,6 +686,7 @@ export default function Navbar() {
     <Link
       key={item.id}
       href={item.href}
+      onClick={(event) => handleSectionNavigation(event, item.id)}
       aria-current={
         isActive(item) ? "location" : undefined
       }
@@ -639,7 +735,7 @@ export default function Navbar() {
     >
       <Link
         href={item.href}
-        onClick={closeMenu}
+        onClick={(event) => handleSectionNavigation(event, item.id)}
         className="
           group flex items-center
           justify-between gap-4 py-5
@@ -683,6 +779,7 @@ export default function Navbar() {
       ===================================== */}
 
       <header
+       id="marmara-fixed-header"
         className={`
           fixed inset-x-0 top-0 z-50
           w-full border-b border-white/10
@@ -725,7 +822,7 @@ export default function Navbar() {
             <div className="min-w-0 justify-self-start">
               <BrandLogo
                 mobile
-                onClick={closeMenu}
+                onClick={(event) => handleSectionNavigation(event, "anasayfa")}
               />
             </div>
 
@@ -758,7 +855,7 @@ export default function Navbar() {
               lg:gap-4 xl:gap-7
             "
           >
-            <BrandLogo />
+            <BrandLogo onClick={(event) => handleSectionNavigation(event, "anasayfa")} />
 
             <nav
               aria-label="Ana navigasyon"

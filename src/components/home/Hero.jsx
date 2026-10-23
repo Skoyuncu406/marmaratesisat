@@ -226,10 +226,12 @@ export default function Hero() {
               duration: 0.6,
             }}
             className="
-              mb-5 flex
-              items-center gap-4
-              sm:mb-6
-            "
+  mb-5 flex
+  items-center gap-4
+  -translate-y-5
+  sm:mb-6
+  sm:-translate-y-6
+"
           >
             <span
               className="

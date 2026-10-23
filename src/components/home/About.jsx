@@ -49,17 +49,17 @@ export default function About() {
 
   return (
     <section
-      id="hakkimizda"
-      aria-labelledby="about-heading"
-      className="
-        relative
-        w-full min-w-0
-        scroll-mt-[85px]
-        overflow-x-clip
-        bg-transparent
-        text-[#13263A]
-        lg:scroll-mt-[100px]
-      "
+  id="hakkimizda"
+  aria-labelledby="about-heading"
+  className="
+    relative
+    w-full min-w-0
+    scroll-mt-[120px]
+    overflow-x-clip
+    bg-transparent
+    text-[#13263A]
+    lg:scroll-mt-[140px]
+  "
     >
       {/* =====================================
           SUBTLE READABILITY GRADIENT
@@ -96,17 +96,17 @@ export default function About() {
           SECTION CONTAINER
       ===================================== */}
 
-      <div
-        className="
-          relative z-10
-          mx-auto w-full
-          max-w-[1600px]
-          px-6 py-20
-          sm:px-10 sm:py-24
-          lg:px-16 lg:py-28
-          xl:px-20
-        "
-      >
+<div
+  className="
+    relative z-10
+    mx-auto w-full
+    max-w-[1600px]
+    px-6 pt-8 pb-20
+    sm:px-10 sm:pt-10 sm:pb-24
+    lg:px-16 lg:pt-12 lg:pb-28
+    xl:px-20
+  "
+>
         {/* TOP SECTION LABEL */}
 
         <motion.div
